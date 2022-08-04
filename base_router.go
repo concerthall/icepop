@@ -1,6 +1,10 @@
 package icepop
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/gliderlabs/ssh"
+)
 
 // Router is basic Router structure. It can be embedded in custom
 // routers to provide easy access to the Handle method. Custom
@@ -17,6 +21,16 @@ func (r *Router) Handle(path string, sh SessionHandler) {
 	}
 
 	r.routes[path] = sh
+}
+
+// HandleFunc binds a ssh.Handler to a SessionHandler and binds it to path.
+// If a handler already exists, this panics.
+func (r *Router) HandleFunc(path string, hf ssh.Handler) {
+	if _, exists := r.routes[path]; exists {
+		panic("Attempted to rebind a pre-existing handler: %s")
+	}
+
+	r.routes[path] = NewSessionHandlerFrom(hf)
 }
 
 // HandlerFor returns the handler for the given path value, or an error

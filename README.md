@@ -31,11 +31,11 @@ import (
 
 func main() {
 	rtr := icepop.NewUsernameRouter()
-	rtr.Handle(
+	rtr.HandleFunc(
 		// the expected username
 		"itshotoutside", 
 		// The handler to be used.
-		icepop.NewSessionHandlerFrom(func(s ssh.Session) {
+		func(s ssh.Session) {
 			wish.Println(s, "I love Ice pops!")
 			s.Exit(0)
 			s.Close()
@@ -90,12 +90,12 @@ import (
 
 func main() {
 	rtr := icepop.NewCommandRouter()
-	rtr.Handle(
+	rtr.HandleFunc(
 		"favorite-flavor",
-		icepop.NewSessionHandlerFrom(func(s ssh.Session) {
+		func(s ssh.Session) {
 			io.WriteString(s, "I like cherry!")
 			s.Exit(0)
-		}))
+		})
 
 	ssh.Handle(rtr.Handler())
 

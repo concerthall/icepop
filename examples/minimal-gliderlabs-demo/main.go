@@ -10,12 +10,12 @@ import (
 
 func main() {
 	rtr := icepop.NewCommandRouter()
-	rtr.Handle(
+	rtr.HandleFunc(
 		"favorite-flavor",
-		icepop.NewSessionHandlerFrom(func(s ssh.Session) {
+		func(s ssh.Session) {
 			io.WriteString(s, "I like cherry!")
 			s.Exit(0)
-		}))
+		})
 
 	ssh.Handle(rtr.Handler())
 
